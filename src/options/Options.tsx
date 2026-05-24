@@ -1,6 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 import { type Settings, loadSettings, saveSettings } from "@/lib/storage";
 import { TOOL_SPECS, defaultToolPolicy } from "@/lib/tools";
+import { t } from "@/lib/i18n";
+
+const DEFAULT_CTX_KEYS: Array<{ key: "url_title" | "selection" | "page" | "screenshot"; labelKey: string }> = [
+  { key: "url_title", labelKey: "opt_default_url_title" },
+  { key: "selection", labelKey: "opt_default_selection" },
+  { key: "page", labelKey: "opt_default_page" },
+  { key: "screenshot", labelKey: "opt_default_screenshot" },
+];
+
+const TRUST_LABEL_KEYS: Record<"read" | "light_write" | "write", string> = {
+  read: "opt_tool_group_read",
+  light_write: "opt_tool_group_light_write",
+  write: "opt_tool_group_write",
+};
 
 export function Options() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -17,7 +31,7 @@ export function Options() {
   }, []);
 
   if (!settings) {
-    return <div className="p-6 text-muted">Loading…</div>;
+    return <div className="p-6 text-muted">{t("opt_loading")}</div>;
   }
 
   const policy = settings.tool_policy ?? defaultToolPolicy();
@@ -32,27 +46,25 @@ export function Options() {
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6 text-sm">
       <header>
-        <h1 className="text-xl font-semibold">Hermes Browser Channel</h1>
-        <p className="text-muted text-xs mt-1">
-          Connect your browser to your Hermes agent. Read-only by default; opt in to write tools as you trust them.
-        </p>
+        <h1 className="text-xl font-semibold">{t("opt_h1")}</h1>
+        <p className="text-muted text-xs mt-1">{t("opt_h1_sub")}</p>
       </header>
 
       <section className="border border-border rounded-lg p-4 space-y-3">
-        <h2 className="text-base font-semibold">Endpoint</h2>
+        <h2 className="text-base font-semibold">{t("opt_section_endpoint")}</h2>
         <label className="block">
-          <span className="text-muted text-xs">WebSocket URL</span>
+          <span className="text-muted text-xs">{t("opt_endpoint_label")}</span>
           <input
             type="text"
             spellCheck={false}
-            placeholder="wss://hermes.example.com/ws/browser"
+            placeholder={t("opt_endpoint_placeholder")}
             className="mt-1 w-full bg-bubbleBot border border-border rounded-md px-2 py-1.5 outline-none focus:border-accent font-mono text-xs"
             value={settings.endpoint}
             onChange={(e) => void update({ endpoint: e.target.value.trim() })}
           />
         </label>
         <label className="block">
-          <span className="text-muted text-xs">Link token (sent as <code>?token=…</code>)</span>
+          <span className="text-muted text-xs">{t("opt_token_label")}</span>
           <input
             type="password"
             spellCheck={false}
@@ -62,31 +74,31 @@ export function Options() {
           />
         </label>
         <div className="text-[11px] text-muted">
-          client_id: <code>{settings.client_id || "(will be generated on first connect)"}</code>
+          {t("opt_client_id_label")} <code>{settings.client_id || t("opt_client_id_pending")}</code>
         </div>
       </section>
 
       <section className="border border-border rounded-lg p-4 space-y-3">
-        <h2 className="text-base font-semibold">Default context to attach</h2>
-        <p className="text-muted text-xs">Selected when you open the side panel. You can toggle per message.</p>
+        <h2 className="text-base font-semibold">{t("opt_section_default_context")}</h2>
+        <p className="text-muted text-xs">{t("opt_section_default_context_hint")}</p>
         <div className="flex flex-wrap gap-3">
-          {(["url_title", "selection", "page", "screenshot"] as const).map((k) => (
-            <label key={k} className="flex items-center gap-2 cursor-pointer">
+          {DEFAULT_CTX_KEYS.map(({ key, labelKey }) => (
+            <label key={key} className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={settings.default_context[k]}
+                checked={settings.default_context[key]}
                 onChange={(e) =>
                   void update({
-                    default_context: { ...settings.default_context, [k]: e.target.checked },
+                    default_context: { ...settings.default_context, [key]: e.target.checked },
                   })
                 }
               />
-              <span className="capitalize">{k.replace("_", " ")}</span>
+              <span>{t(labelKey)}</span>
             </label>
           ))}
         </div>
         <label className="block">
-          <span className="text-muted text-xs">Max page text length (characters)</span>
+          <span className="text-muted text-xs">{t("opt_max_page_label")}</span>
           <input
             type="number"
             min={500}
@@ -101,10 +113,8 @@ export function Options() {
 
       <section className="border border-border rounded-lg p-4 space-y-4">
         <div>
-          <h2 className="text-base font-semibold">Tools the agent can call</h2>
-          <p className="text-muted text-xs mt-1">
-            Toggle on the capabilities you want the agent to have. Write tools always show in the chat as an audit row.
-          </p>
+          <h2 className="text-base font-semibold">{t("opt_section_tools")}</h2>
+          <p className="text-muted text-xs mt-1">{t("opt_section_tools_hint")}</p>
         </div>
 
         <label className="flex items-center gap-2 text-xs">
@@ -113,13 +123,13 @@ export function Options() {
             checked={settings.auto_confirm_writes}
             onChange={(e) => void update({ auto_confirm_writes: e.target.checked })}
           />
-          Auto-confirm write tools (skip the Run/Deny prompt)
+          {t("opt_auto_confirm")}
         </label>
 
         {(["read", "light_write", "write"] as const).map((trust) => (
           <div key={trust} className="space-y-2">
             <h3 className="text-xs uppercase tracking-wide text-muted">
-              {trust === "read" ? "Read" : trust === "light_write" ? "Light write" : "Write"}
+              {t(TRUST_LABEL_KEYS[trust])}
             </h3>
             <div className="space-y-1.5">
               {grouped[trust].map((spec) => (
@@ -137,7 +147,7 @@ export function Options() {
                     <div className="font-mono text-xs">
                       {spec.name}
                       {spec.requires_confirmation ? (
-                        <span className="ml-1 text-[10px] text-yellow-400">[confirm]</span>
+                        <span className="ml-1 text-[10px] text-yellow-400">{t("opt_tool_confirm_badge")}</span>
                       ) : null}
                     </div>
                     <div className="text-[11px] text-muted">{spec.description}</div>
@@ -150,7 +160,7 @@ export function Options() {
       </section>
 
       <footer className="text-xs text-muted">
-        {savedAt ? `Saved at ${new Date(savedAt).toLocaleTimeString()}` : "Changes save automatically."}
+        {savedAt ? t("opt_saved_at", new Date(savedAt).toLocaleTimeString()) : t("opt_save_hint_default")}
       </footer>
     </div>
   );

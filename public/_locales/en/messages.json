@@ -1,0 +1,103 @@
+{
+  "extName": {
+    "message": "Hermes Browser Channel",
+    "description": "Extension name"
+  },
+  "extShortName": {
+    "message": "Hermes",
+    "description": "Short extension name"
+  },
+  "extDescription": {
+    "message": "Chat with your Hermes agent from the browser side panel. Attaches page context (URL, title, selection, page text, screenshot) and exposes opt-in tools the agent can call. Every tool call is audited in the chat thread."
+  },
+  "actionTitle": {
+    "message": "Open Hermes side panel"
+  },
+
+  "conn_idle": { "message": "idle" },
+  "conn_connecting": { "message": "connecting…" },
+  "conn_open": { "message": "connected" },
+  "conn_closed": { "message": "disconnected" },
+  "conn_error": { "message": "error" },
+
+  "bar_reconnect": { "message": "Reconnect" },
+  "bar_settings": { "message": "Settings" },
+  "bar_clear": { "message": "Clear history" },
+  "bar_clearConfirm": { "message": "Clear all chat history in this client?" },
+
+  "setup_title": { "message": "Set up Hermes endpoint" },
+  "setup_open_options": { "message": "Open" },
+  "setup_body": {
+    "message": "Open $OPEN$ and enter your Hermes WebSocket URL (e.g. wss://hermes.example.com/ws/browser) plus a link token.",
+    "placeholders": {
+      "open": { "content": "$1", "example": "Options" }
+    }
+  },
+
+  "empty_state_line1": { "message": "Start chatting with your Hermes agent." },
+  "empty_state_line2": { "message": "Use the chips below to attach page context." },
+
+  "msg_ctx_tag": { "message": "ctx", "description": "Tag shown on a user message when page context was attached" },
+
+  "chip_url_label": { "message": "URL" },
+  "chip_url_title": { "message": "Send current tab URL + title" },
+  "chip_sel_label": { "message": "Sel" },
+  "chip_sel_title": { "message": "Send selected text" },
+  "chip_page_label": { "message": "Page" },
+  "chip_page_title": { "message": "Send extracted page text" },
+  "chip_shot_label": { "message": "Shot" },
+  "chip_shot_title": { "message": "Send a JPEG screenshot of the visible page" },
+
+  "composer_placeholder": { "message": "Message your agent… (Enter to send, Shift+Enter for newline)" },
+  "composer_placeholder_disabled": {
+    "message": "not connected ($STATE$)",
+    "placeholders": {
+      "state": { "content": "$1", "example": "closed" }
+    }
+  },
+  "composer_send": { "message": "Send" },
+
+  "tool_label": { "message": "tool" },
+  "tool_run": { "message": "Run" },
+  "tool_deny": { "message": "Deny" },
+  "tool_state_pending": { "message": "needs confirm" },
+  "tool_state_running": { "message": "running…" },
+  "tool_state_ok_prefix": { "message": "→ " },
+  "tool_state_error_prefix": { "message": "→ " },
+  "tool_state_denied": { "message": "denied" },
+
+  "opt_h1": { "message": "Hermes Browser Channel" },
+  "opt_h1_sub": { "message": "Connect your browser to your Hermes agent. Read-only by default; opt in to write tools as you trust them." },
+
+  "opt_section_endpoint": { "message": "Endpoint" },
+  "opt_endpoint_label": { "message": "WebSocket URL" },
+  "opt_endpoint_placeholder": { "message": "wss://hermes.example.com/ws/browser" },
+  "opt_token_label": { "message": "Link token (sent as ?token=…)" },
+  "opt_client_id_label": { "message": "client_id:" },
+  "opt_client_id_pending": { "message": "(will be generated on first connect)" },
+
+  "opt_section_default_context": { "message": "Default context to attach" },
+  "opt_section_default_context_hint": { "message": "Selected when you open the side panel. You can toggle per message." },
+  "opt_default_url_title": { "message": "URL title" },
+  "opt_default_selection": { "message": "Selection" },
+  "opt_default_page": { "message": "Page" },
+  "opt_default_screenshot": { "message": "Screenshot" },
+  "opt_max_page_label": { "message": "Max page text length (characters)" },
+
+  "opt_section_tools": { "message": "Tools the agent can call" },
+  "opt_section_tools_hint": { "message": "Toggle on the capabilities you want the agent to have. Write tools always show in the chat as an audit row." },
+  "opt_auto_confirm": { "message": "Auto-confirm write tools (skip the Run/Deny prompt)" },
+  "opt_tool_group_read": { "message": "Read" },
+  "opt_tool_group_light_write": { "message": "Light write" },
+  "opt_tool_group_write": { "message": "Write" },
+  "opt_tool_confirm_badge": { "message": "[confirm]" },
+
+  "opt_loading": { "message": "Loading…" },
+  "opt_saved_at": {
+    "message": "Saved at $TIME$",
+    "placeholders": {
+      "time": { "content": "$1", "example": "12:34:56 PM" }
+    }
+  },
+  "opt_save_hint_default": { "message": "Changes save automatically." }
+}

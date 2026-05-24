@@ -1,4 +1,5 @@
 import type { ChatMessage } from "@/lib/storage";
+import { t } from "@/lib/i18n";
 
 type ToolMsg = Extract<ChatMessage, { role: "tool" }>;
 
@@ -34,19 +35,19 @@ export function ToolRow({ msg, onConfirm }: Props) {
   return (
     <div className="text-[11px] text-muted border border-border bg-bubbleBot/40 rounded-md px-2 py-1.5">
       <div className="flex items-baseline gap-1">
-        <span className="text-muted">tool</span>
+        <span className="text-muted">{t("tool_label")}</span>
         <span className={`font-mono ${stateColor}`}>{msg.tool}</span>
         <span className="text-muted truncate">({fmtArgs(msg.args)})</span>
         <span className={`ml-auto ${stateColor}`}>
           {msg.state === "ok"
-            ? `→ ${msg.summary ?? "ok"}`
+            ? `${t("tool_state_ok_prefix")}${msg.summary ?? "ok"}`
             : msg.state === "error"
-              ? `→ ${msg.error}`
+              ? `${t("tool_state_error_prefix")}${msg.error}`
               : msg.state === "denied"
-                ? "denied"
+                ? t("tool_state_denied")
                 : msg.state === "running"
-                  ? "running…"
-                  : "needs confirm"}
+                  ? t("tool_state_running")
+                  : t("tool_state_pending")}
         </span>
       </div>
       {msg.state === "pending" ? (
@@ -55,13 +56,13 @@ export function ToolRow({ msg, onConfirm }: Props) {
             className="px-2 py-0.5 rounded bg-accent text-bg text-[11px] font-semibold"
             onClick={() => onConfirm(msg.call_id, true)}
           >
-            Run
+            {t("tool_run")}
           </button>
           <button
             className="px-2 py-0.5 rounded border border-border text-[11px]"
             onClick={() => onConfirm(msg.call_id, false)}
           >
-            Deny
+            {t("tool_deny")}
           </button>
         </div>
       ) : null}

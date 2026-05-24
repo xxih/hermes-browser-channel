@@ -9,7 +9,7 @@ description: >
   text, screenshot) and opt-in tools the agent can call back into the
   browser. Designed for personal use behind an SSH tunnel — the
   WebSocket server binds 127.0.0.1 by default.
-author: xiechang
+author: xxih
 requires_env:
   - name: BROWSER_LINK_TOKEN
     description: "Shared secret the browser extension sends as ?token=… ; treat it like a password."

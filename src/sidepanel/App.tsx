@@ -10,6 +10,7 @@ import {
   saveHistory,
 } from "@/lib/storage";
 import { uuid } from "@/lib/id";
+import { t } from "@/lib/i18n";
 import { Composer } from "./components/Composer";
 import { ConnectionBar } from "./components/ConnectionBar";
 import { MessageBubble } from "./components/MessageBubble";
@@ -227,7 +228,7 @@ export function App() {
   }, []);
 
   const onClearHistory = useCallback(() => {
-    if (!window.confirm("Clear all chat history in this client?")) return;
+    if (!window.confirm(t("bar_clearConfirm"))) return;
     void clearHistory().then(() => setHistory([]));
   }, []);
 
@@ -253,17 +254,28 @@ export function App() {
 
       {needsSetup ? (
         <div className="m-3 p-3 border border-border rounded-md text-muted text-xs">
-          <div className="text-fg font-semibold mb-1">Set up Hermes endpoint</div>
-          Open <button onClick={openOptions} className="text-accent underline">Options</button> and enter your Hermes WebSocket URL (e.g. <code>wss://hermes.example.com/ws/browser</code>) plus a link token.
+          <div className="text-fg font-semibold mb-1">{t("setup_title")}</div>
+          {t("setup_body", "__OPEN__")
+            .split("__OPEN__")
+            .map((chunk, i, arr) => (
+              <span key={i}>
+                {chunk}
+                {i < arr.length - 1 ? (
+                  <button onClick={openOptions} className="text-accent underline">
+                    {t("setup_open_options")}
+                  </button>
+                ) : null}
+              </span>
+            ))}
         </div>
       ) : null}
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto chat-scroll px-3 py-2 space-y-2">
         {history.length === 0 ? (
           <div className="text-muted text-center pt-12">
-            Start chatting with your Hermes agent.
+            {t("empty_state_line1")}
             <br />
-            Use the chips below to attach page context.
+            {t("empty_state_line2")}
           </div>
         ) : null}
         {history.map((m) =>

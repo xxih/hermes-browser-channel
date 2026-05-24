@@ -1,4 +1,5 @@
 import type { ChatMessage } from "@/lib/storage";
+import { t } from "@/lib/i18n";
 
 type Props = { msg: Exclude<ChatMessage, { role: "tool" }> };
 
@@ -37,7 +38,7 @@ export function MessageBubble({ msg }: Props) {
         </div>
         <div className="text-[10px] text-muted mt-1 flex items-center gap-1">
           <span>{fmtTime(msg.ts)}</span>
-          {isUser && msg.has_context ? <span className="text-accent">· ctx</span> : null}
+          {isUser && msg.has_context ? <span className="text-accent">· {t("msg_ctx_tag")}</span> : null}
         </div>
       </div>
     </div>

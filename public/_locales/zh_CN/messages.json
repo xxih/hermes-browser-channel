@@ -1,0 +1,95 @@
+{
+  "extName": { "message": "Hermes 浏览器 Channel" },
+  "extShortName": { "message": "Hermes" },
+  "extDescription": {
+    "message": "在浏览器侧边栏跟你的 Hermes agent 聊天。能把当前页的 URL、标题、选中文、正文、截图作为上下文附加发送，也可以授权 agent 调用一系列浏览器能力（每次调用都在 chat 里有审计行）。"
+  },
+  "actionTitle": { "message": "打开 Hermes 侧边栏" },
+
+  "conn_idle": { "message": "未连接" },
+  "conn_connecting": { "message": "连接中…" },
+  "conn_open": { "message": "已连接" },
+  "conn_closed": { "message": "已断开" },
+  "conn_error": { "message": "出错" },
+
+  "bar_reconnect": { "message": "重连" },
+  "bar_settings": { "message": "设置" },
+  "bar_clear": { "message": "清空历史" },
+  "bar_clearConfirm": { "message": "确定要清空本机的所有聊天记录吗？" },
+
+  "setup_title": { "message": "配置 Hermes 接入点" },
+  "setup_open_options": { "message": "设置" },
+  "setup_body": {
+    "message": "打开$OPEN$，填入你的 Hermes WebSocket URL（例如 wss://hermes.example.com/ws/browser）和 link token。",
+    "placeholders": {
+      "open": { "content": "$1", "example": "设置" }
+    }
+  },
+
+  "empty_state_line1": { "message": "开始跟你的 Hermes agent 聊天。" },
+  "empty_state_line2": { "message": "用下方的 chip 选择附加页面上下文。" },
+
+  "msg_ctx_tag": { "message": "上下文" },
+
+  "chip_url_label": { "message": "URL" },
+  "chip_url_title": { "message": "附带当前页面的 URL + 标题" },
+  "chip_sel_label": { "message": "选中" },
+  "chip_sel_title": { "message": "附带选中的文字" },
+  "chip_page_label": { "message": "正文" },
+  "chip_page_title": { "message": "附带提取的页面正文" },
+  "chip_shot_label": { "message": "截图" },
+  "chip_shot_title": { "message": "附带当前可见区域的 JPEG 截图" },
+
+  "composer_placeholder": { "message": "给 agent 发消息……（Enter 发送，Shift+Enter 换行）" },
+  "composer_placeholder_disabled": {
+    "message": "未连接（$STATE$）",
+    "placeholders": {
+      "state": { "content": "$1", "example": "closed" }
+    }
+  },
+  "composer_send": { "message": "发送" },
+
+  "tool_label": { "message": "工具" },
+  "tool_run": { "message": "执行" },
+  "tool_deny": { "message": "拒绝" },
+  "tool_state_pending": { "message": "等待确认" },
+  "tool_state_running": { "message": "执行中…" },
+  "tool_state_ok_prefix": { "message": "→ " },
+  "tool_state_error_prefix": { "message": "→ " },
+  "tool_state_denied": { "message": "已拒绝" },
+
+  "opt_h1": { "message": "Hermes 浏览器 Channel" },
+  "opt_h1_sub": { "message": "把你的浏览器接到你的 Hermes agent。默认只读；写类工具按你信任程度逐项开启。" },
+
+  "opt_section_endpoint": { "message": "接入点" },
+  "opt_endpoint_label": { "message": "WebSocket URL" },
+  "opt_endpoint_placeholder": { "message": "wss://hermes.example.com/ws/browser" },
+  "opt_token_label": { "message": "Link token（作为 ?token=… 传输）" },
+  "opt_client_id_label": { "message": "client_id：" },
+  "opt_client_id_pending": { "message": "（首次连接时自动生成）" },
+
+  "opt_section_default_context": { "message": "默认附加的上下文" },
+  "opt_section_default_context_hint": { "message": "打开侧边栏时的默认选中项。每条消息发送前还能再切换。" },
+  "opt_default_url_title": { "message": "URL 标题" },
+  "opt_default_selection": { "message": "选中文" },
+  "opt_default_page": { "message": "正文" },
+  "opt_default_screenshot": { "message": "截图" },
+  "opt_max_page_label": { "message": "页面正文最长字符数" },
+
+  "opt_section_tools": { "message": "Agent 可调用的工具" },
+  "opt_section_tools_hint": { "message": "勾选你愿意给 agent 用的能力。写类工具每次都会在 chat 里显示审计行。" },
+  "opt_auto_confirm": { "message": "自动确认写类工具（跳过执行/拒绝弹窗）" },
+  "opt_tool_group_read": { "message": "读取" },
+  "opt_tool_group_light_write": { "message": "轻写入" },
+  "opt_tool_group_write": { "message": "写入" },
+  "opt_tool_confirm_badge": { "message": "[需确认]" },
+
+  "opt_loading": { "message": "加载中…" },
+  "opt_saved_at": {
+    "message": "已保存于 $TIME$",
+    "placeholders": {
+      "time": { "content": "$1", "example": "12:34:56" }
+    }
+  },
+  "opt_save_hint_default": { "message": "改动自动保存。" }
+}

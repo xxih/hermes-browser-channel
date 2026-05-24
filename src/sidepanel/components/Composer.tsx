@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import type { ContextOptions } from "@/lib/protocol";
+import { t } from "@/lib/i18n";
 
 type Props = {
   contextOptions: ContextOptions;
@@ -9,11 +10,11 @@ type Props = {
   disabledReason?: string;
 };
 
-const CHIPS: Array<{ key: keyof ContextOptions; label: string; title: string }> = [
-  { key: "url_title", label: "URL", title: "Send current tab URL + title" },
-  { key: "selection", label: "Sel", title: "Send selected text" },
-  { key: "page", label: "Page", title: "Send extracted page text" },
-  { key: "screenshot", label: "Shot", title: "Send a JPEG screenshot of the visible page" },
+const CHIPS: Array<{ key: keyof ContextOptions; labelKey: string; titleKey: string }> = [
+  { key: "url_title", labelKey: "chip_url_label", titleKey: "chip_url_title" },
+  { key: "selection", labelKey: "chip_sel_label", titleKey: "chip_sel_title" },
+  { key: "page", labelKey: "chip_page_label", titleKey: "chip_page_title" },
+  { key: "screenshot", labelKey: "chip_shot_label", titleKey: "chip_shot_title" },
 ];
 
 export function Composer({ contextOptions, onContextChange, onSend, disabled, disabledReason }: Props) {
@@ -45,6 +46,10 @@ export function Composer({ contextOptions, onContextChange, onSend, disabled, di
     ta.style.height = Math.min(ta.scrollHeight, 220) + "px";
   }, []);
 
+  const placeholder = disabled
+    ? t("composer_placeholder_disabled", disabledReason ?? "—")
+    : t("composer_placeholder");
+
   return (
     <div className="border-t border-border p-2 bg-bg">
       <div className="flex flex-wrap gap-1 mb-2">
@@ -53,7 +58,7 @@ export function Composer({ contextOptions, onContextChange, onSend, disabled, di
           return (
             <button
               key={c.key}
-              title={c.title}
+              title={t(c.titleKey)}
               onClick={() => onContextChange({ ...contextOptions, [c.key]: !on })}
               className={
                 "text-[11px] px-2 py-0.5 rounded-full border transition-colors " +
@@ -62,7 +67,7 @@ export function Composer({ contextOptions, onContextChange, onSend, disabled, di
                   : "bg-transparent text-muted border-border hover:text-fg")
               }
             >
-              {c.label}
+              {t(c.labelKey)}
             </button>
           );
         })}
@@ -71,7 +76,7 @@ export function Composer({ contextOptions, onContextChange, onSend, disabled, di
         <textarea
           ref={taRef}
           rows={1}
-          placeholder={disabled ? `not connected (${disabledReason ?? "—"})` : "Message your agent… (Enter to send, Shift+Enter for newline)"}
+          placeholder={placeholder}
           className="flex-1 resize-none bg-bubbleBot text-fg border border-border rounded-md px-2 py-1.5 outline-none focus:border-accent text-sm min-h-[32px] max-h-[220px]"
           onKeyDown={onKeyDown}
           onInput={onInput}
@@ -87,7 +92,7 @@ export function Composer({ contextOptions, onContextChange, onSend, disabled, di
               : "bg-accent text-bg hover:opacity-90")
           }
         >
-          Send
+          {t("composer_send")}
         </button>
       </div>
     </div>

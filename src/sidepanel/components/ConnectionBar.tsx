@@ -1,11 +1,12 @@
 import type { ConnectionState } from "@/lib/messages";
+import { t } from "@/lib/i18n";
 
-const LABELS: Record<ConnectionState, string> = {
-  idle: "idle",
-  connecting: "connecting…",
-  open: "connected",
-  closed: "disconnected",
-  error: "error",
+const KEYS: Record<ConnectionState, string> = {
+  idle: "conn_idle",
+  connecting: "conn_connecting",
+  open: "conn_open",
+  closed: "conn_closed",
+  error: "conn_error",
 };
 
 const COLORS: Record<ConnectionState, string> = {
@@ -31,7 +32,7 @@ export function ConnectionBar({ state, detail, onReconnect, onSettings, onClear 
       <div className="flex flex-col leading-tight">
         <span className="text-fg font-semibold text-xs">Hermes</span>
         <span className="text-muted text-[10px]">
-          {LABELS[state]}
+          {t(KEYS[state])}
           {detail ? ` · ${detail}` : ""}
         </span>
       </div>
@@ -39,21 +40,21 @@ export function ConnectionBar({ state, detail, onReconnect, onSettings, onClear 
         <button
           className="text-xs text-muted hover:text-fg px-2 py-1 rounded"
           onClick={onReconnect}
-          title="Reconnect"
+          title={t("bar_reconnect")}
         >
           ↻
         </button>
         <button
           className="text-xs text-muted hover:text-fg px-2 py-1 rounded"
           onClick={onSettings}
-          title="Settings"
+          title={t("bar_settings")}
         >
           ⚙
         </button>
         <button
           className="text-xs text-muted hover:text-fg px-2 py-1 rounded"
           onClick={onClear}
-          title="Clear history"
+          title={t("bar_clear")}
         >
           ⌫
         </button>
