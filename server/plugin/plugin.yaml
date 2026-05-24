@@ -1,0 +1,34 @@
+name: browser-channel
+label: Browser
+kind: platform
+version: 0.1.0
+description: >
+  Browser side-panel channel for Hermes Agent. Pair with the
+  hermes-browser-channel Chrome extension. Bidirectional chat over a
+  WebSocket, with page-context attachments (URL, title, selection, page
+  text, screenshot) and opt-in tools the agent can call back into the
+  browser. Designed for personal use behind an SSH tunnel — the
+  WebSocket server binds 127.0.0.1 by default.
+author: xiechang
+requires_env:
+  - name: BROWSER_LINK_TOKEN
+    description: "Shared secret the browser extension sends as ?token=… ; treat it like a password."
+    prompt: "Browser link token (any non-empty string)"
+    password: true
+optional_env:
+  - name: BROWSER_BIND_HOST
+    description: "Bind host for the WebSocket server (default 127.0.0.1; use 0.0.0.0 only behind a reverse proxy)."
+    prompt: "Bind host"
+    password: false
+  - name: BROWSER_BIND_PORT
+    description: "Bind port for the WebSocket server (default 18790)."
+    prompt: "Bind port"
+    password: false
+  - name: BROWSER_WS_PATH
+    description: "URL path for the WebSocket endpoint (default /ws/browser)."
+    prompt: "WS path"
+    password: false
+  - name: BROWSER_HOME_CHANNEL
+    description: "client_id for cron / notification delivery (default: any connected client)."
+    prompt: "Home client_id (or empty)"
+    password: false
