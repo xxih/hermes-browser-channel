@@ -65,36 +65,53 @@ export async function capturePageContext(opts: ContextOptions, maxPageChars: num
     captured_at: Date.now(),
   };
 
+  const warnings: string[] = [];
+
   const needsScripting = opts.selection || opts.page;
   if (needsScripting) {
     if (!tab.id || !isInjectable(url)) {
-      throw new Error(`cannot read this page (${url || "unknown URL"})`);
-    }
-    const [{ result } = { result: null }] = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: extractInPage,
-      args: [maxPageChars],
-    });
-    const r = result as ExtractResult | null;
-    if (r) {
-      if (opts.selection && r.selection) ctx.selection = r.selection;
-      if (opts.page) {
-        ctx.page = {
-          excerpt: r.excerpt || undefined,
-          content_text: r.page_text,
-          length: r.page_text.length,
-          truncated: r.truncated,
-        };
+      warnings.push(`selection/page skipped: cannot inject into ${url || "this page"}`);
+    } else {
+      try {
+        const [{ result } = { result: null }] = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: extractInPage,
+          args: [maxPageChars],
+        });
+        const r = result as ExtractResult | null;
+        if (r) {
+          if (opts.selection && r.selection) ctx.selection = r.selection;
+          if (opts.page) {
+            ctx.page = {
+              excerpt: r.excerpt || undefined,
+              content_text: r.page_text,
+              length: r.page_text.length,
+              truncated: r.truncated,
+            };
+          }
+        }
+      } catch (e) {
+        warnings.push(`selection/page skipped: ${(e as Error).message}`);
       }
     }
   }
 
   if (opts.screenshot) {
-    if (!tab.windowId) throw new Error("no active window for screenshot");
-    const dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, { format: "jpeg", quality: 70 });
-    const b64 = dataUrl.replace(/^data:image\/jpeg;base64,/, "");
-    ctx.screenshot = { mime: "image/jpeg", data_base64: b64 };
+    if (!tab.windowId) {
+      warnings.push("screenshot skipped: no active window");
+    } else {
+      try {
+        const dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, { format: "jpeg", quality: 70 });
+        const b64 = dataUrl.replace(/^data:image\/jpeg;base64,/, "");
+        ctx.screenshot = { mime: "image/jpeg", data_base64: b64 };
+      } catch (e) {
+        warnings.push(`screenshot skipped: ${(e as Error).message}`);
+      }
+    }
   }
 
+  if (warnings.length > 0) {
+    (ctx as PageContext & { _warnings?: string[] })._warnings = warnings;
+  }
   return ctx;
 }

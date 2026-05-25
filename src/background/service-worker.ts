@@ -240,17 +240,35 @@ async function handleSidepanelMessage(msg: SidepanelToBg, port: chrome.runtime.P
     case "send_message": {
       const settings = await loadSettings();
       let page_context;
-      try {
-        page_context = await capturePageContext(msg.context_options, settings.max_page_chars);
-      } catch (e) {
-        broadcast({
-          kind: "server_event",
-          event: {
-            type: "system",
-            level: "warn",
-            message: `context capture failed: ${(e as Error).message}`,
-          },
-        });
+      const anyRequested =
+        msg.context_options.url_title ||
+        msg.context_options.selection ||
+        msg.context_options.page ||
+        msg.context_options.screenshot;
+      if (anyRequested) {
+        try {
+          const ctx = await capturePageContext(msg.context_options, settings.max_page_chars);
+          const warnings = (ctx as typeof ctx & { _warnings?: string[] })._warnings;
+          if (warnings && warnings.length > 0) {
+            for (const w of warnings) {
+              broadcast({
+                kind: "server_event",
+                event: { type: "system", level: "warn", message: w },
+              });
+            }
+            delete (ctx as typeof ctx & { _warnings?: string[] })._warnings;
+          }
+          page_context = ctx;
+        } catch (e) {
+          broadcast({
+            kind: "server_event",
+            event: {
+              type: "system",
+              level: "warn",
+              message: `context capture failed: ${(e as Error).message}`,
+            },
+          });
+        }
       }
       const ok = send({
         type: "user_message",

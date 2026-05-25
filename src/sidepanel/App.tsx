@@ -15,12 +15,14 @@ import { Composer } from "./components/Composer";
 import { ConnectionBar } from "./components/ConnectionBar";
 import { MessageBubble } from "./components/MessageBubble";
 import { ToolRow } from "./components/ToolRow";
+import { TypingIndicator } from "./components/TypingIndicator";
 
 const SUBSCRIBE: SidepanelToBg = { kind: "subscribe" };
 
 export function App() {
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [conn, setConn] = useState<{ state: ConnectionState; detail?: string }>({ state: "idle" });
+  const [typing, setTyping] = useState(false);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [contextOptions, setContextOptions] = useState<ContextOptions>({
     url_title: true,
@@ -57,11 +59,33 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    const port = chrome.runtime.connect({ name: "sidepanel" });
-    portRef.current = port;
-    port.postMessage(SUBSCRIBE);
+    let cancelled = false;
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
-    port.onMessage.addListener((msg: BgToSidepanel) => {
+    const wirePort = (port: chrome.runtime.Port) => {
+      port.onMessage.addListener(onPortMessage);
+      port.onDisconnect.addListener(() => {
+        portRef.current = null;
+        if (cancelled) return;
+        // Service worker was suspended/evicted — rebuild the port so
+        // the next user action wakes the SW and rebinds the WS.
+        reconnectTimer = setTimeout(openPort, 500);
+      });
+    };
+
+    const openPort = () => {
+      if (cancelled) return;
+      try {
+        const port = chrome.runtime.connect({ name: "sidepanel" });
+        portRef.current = port;
+        port.postMessage(SUBSCRIBE);
+        wirePort(port);
+      } catch {
+        reconnectTimer = setTimeout(openPort, 1000);
+      }
+    };
+
+    const onPortMessage = (msg: BgToSidepanel) => {
       if (msg.kind === "connection") {
         setConn({ state: msg.state, detail: msg.detail });
         return;
@@ -98,6 +122,7 @@ export function App() {
           return;
         }
         if (ev.type === "assistant_message") {
+          setTyping(false);
           upsert((h) => [
             ...h,
             { id: ev.message_id, role: "assistant", text: ev.text, ts: ev.ts ?? Date.now() },
@@ -105,6 +130,7 @@ export function App() {
           return;
         }
         if (ev.type === "assistant_message_start") {
+          setTyping(false);
           upsert((h) => [
             ...h,
             { id: ev.message_id, role: "assistant", text: "", ts: ev.ts ?? Date.now(), streaming: true },
@@ -145,7 +171,7 @@ export function App() {
           return;
         }
         if (ev.type === "typing") {
-          // could show a typing indicator; skip for MVP
+          setTyping(ev.on);
           return;
         }
         return;
@@ -179,15 +205,15 @@ export function App() {
           return next;
         });
       }
-    });
+    };
 
-    port.onDisconnect.addListener(() => {
-      portRef.current = null;
-    });
+    openPort();
 
     return () => {
+      cancelled = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
       try {
-        port.disconnect();
+        portRef.current?.disconnect();
       } catch {
         // ignore
       }
@@ -285,6 +311,7 @@ export function App() {
             <MessageBubble key={m.id} msg={m} />
           ),
         )}
+        {typing ? <TypingIndicator /> : null}
       </div>
 
       <Composer

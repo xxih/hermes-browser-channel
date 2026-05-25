@@ -48,6 +48,8 @@
     }
   },
   "composer_send": { "message": "发送" },
+  "typing_label": { "message": "Hermes 正在输入" },
+  "typing_aria": { "message": "Hermes 正在输入" },
 
   "tool_label": { "message": "工具" },
   "tool_run": { "message": "执行" },

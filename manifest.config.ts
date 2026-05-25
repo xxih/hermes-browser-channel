@@ -20,6 +20,7 @@ export default defineManifest({
     "tabs",
     "downloads",
   ],
+  host_permissions: ["<all_urls>"],
 
   background: {
     service_worker: "src/background/service-worker.ts",

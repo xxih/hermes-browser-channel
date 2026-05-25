@@ -56,6 +56,8 @@
     }
   },
   "composer_send": { "message": "Send" },
+  "typing_label": { "message": "Hermes is typing" },
+  "typing_aria": { "message": "Hermes is typing" },
 
   "tool_label": { "message": "tool" },
   "tool_run": { "message": "Run" },

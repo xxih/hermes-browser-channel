@@ -1,3 +1,4 @@
+import { RotateCw, Settings, Trash2 } from "lucide-react";
 import type { ConnectionState } from "@/lib/messages";
 import { t } from "@/lib/i18n";
 
@@ -38,25 +39,28 @@ export function ConnectionBar({ state, detail, onReconnect, onSettings, onClear 
       </div>
       <div className="ml-auto flex items-center gap-1">
         <button
-          className="text-xs text-muted hover:text-fg px-2 py-1 rounded"
+          className="text-muted hover:text-fg p-1.5 rounded transition-colors"
           onClick={onReconnect}
           title={t("bar_reconnect")}
+          aria-label={t("bar_reconnect")}
         >
-          ↻
+          <RotateCw size={14} strokeWidth={2} />
         </button>
         <button
-          className="text-xs text-muted hover:text-fg px-2 py-1 rounded"
+          className="text-muted hover:text-fg p-1.5 rounded transition-colors"
           onClick={onSettings}
           title={t("bar_settings")}
+          aria-label={t("bar_settings")}
         >
-          ⚙
+          <Settings size={14} strokeWidth={2} />
         </button>
         <button
-          className="text-xs text-muted hover:text-fg px-2 py-1 rounded"
+          className="text-muted hover:text-fg p-1.5 rounded transition-colors"
           onClick={onClear}
           title={t("bar_clear")}
+          aria-label={t("bar_clear")}
         >
-          ⌫
+          <Trash2 size={14} strokeWidth={2} />
         </button>
       </div>
     </div>
